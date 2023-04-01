@@ -1,0 +1,3 @@
+[submodule "dependencies/pancake"]
+	path = dependencies/pancake
+	url = https://github.com/RohanFredriksson/PancakeEngine.git
