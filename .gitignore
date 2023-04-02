@@ -1,0 +1,7 @@
+build/CMakeFiles
+build/dependencies
+build/cmake_install.cmake
+build/CMakeCache.txt
+build/Makefile
+build/main.cpp
+build/*.exe
