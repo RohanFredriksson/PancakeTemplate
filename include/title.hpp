@@ -7,6 +7,6 @@ class TitleComponent : public MouseDown, public Component {
     public:
         static Component* create();
         TitleComponent();
-        void mouseDownCallback() override;    
+        void onMouseDown() override;    
         
 };
