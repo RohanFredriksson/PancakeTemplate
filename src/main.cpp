@@ -42,7 +42,7 @@ void TitleInit(Scene* scene) {
     entity->addComponent(rigidbody);
 
     audioplayer = new AudioPlayer();
-    audioplayer->setAudioWave(AudioPool::get("assets/audio/ui.mp3"));
+    audioplayer->setAudioWave(AudioPool::get("assets/audio/click.mp3"));
     entity->addComponent(audioplayer);
 
     titlecomponent = new TitleComponent();

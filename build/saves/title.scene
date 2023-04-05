@@ -1,7 +1,7 @@
 {
     "audio": [
         {
-            "filename": "assets/audio/ui.mp3"
+            "filename": "assets/audio/click.mp3"
         }
     ],
     "camera": {
@@ -21,8 +21,8 @@
             0.0
         ],
         "position": [
-            3.059999942779541,
-            3.179999828338623
+            1.0500000715255737,
+            1.1849998235702515
         ],
         "projectionSize": [
             12.0,
@@ -91,7 +91,7 @@
                     ]
                 },
                 {
-                    "filename": "assets/audio/ui.mp3",
+                    "filename": "assets/audio/click.mp3",
                     "id": 2,
                     "type": "AudioPlayer"
                 },
@@ -102,7 +102,7 @@
             ],
             "id": 0,
             "position": [
-                2.433335065841675,
+                4.383338928222656,
                 0.9977310299873352
             ],
             "rotation": 0.0,

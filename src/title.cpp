@@ -8,7 +8,7 @@ TitleComponent::TitleComponent() : Component("TitleComponent") {
 
 }
 
-void TitleComponent::onMouseDown() {
+void TitleComponent::update(float dt) {
 
     if (MouseListener::isMouseBeginDown(GLFW_MOUSE_BUTTON_LEFT)) {
         

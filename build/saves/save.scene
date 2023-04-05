@@ -1,7 +1,7 @@
 {
     "audio": [
         {
-            "filename": "assets/audio/ui.mp3"
+            "filename": "assets/audio/click.mp3"
         }
     ],
     "camera": {
@@ -159,7 +159,7 @@
                     ]
                 },
                 {
-                    "filename": "assets/audio/ui.mp3",
+                    "filename": "assets/audio/click.mp3",
                     "id": 2,
                     "type": "AudioPlayer"
                 },
