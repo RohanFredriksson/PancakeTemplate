@@ -1,6 +1,5 @@
 #!/bin/python3
 
-import sys
 import os
 import re
 
@@ -14,12 +13,6 @@ using std::string;
 
 """
 
-MAIN = """int main() {
-    _register();
-    return _main();
-}
-"""
-
 def get_source_files():
 
     source_files = []
@@ -31,38 +24,6 @@ def get_source_files():
 
     return source_files
 
-def get_header_files():
-
-    header_files = []
-    for root, _, filenames in os.walk("./../include"):
-        for filename in filenames:
-            search = re.search(r'[(.hpp)(.hxx)(.h)]$', filename)
-            if search == None: continue
-            header_files.append(os.path.join(root, filename))
-
-    return header_files
-
-def get_components(files):
-
-    components = []
-    for file in files:
-        
-        f = open(file, 'r')
-        lines = f.readlines()
-        f.close()
-
-        for line in lines:
-            
-            search = re.search(r'class.*:.*\s*public\s+Component', line)
-            if search == None: continue
-            
-            line = re.sub(r'class\s*', '', line)
-            line = re.sub(r'\s*:.*', '', line)
-            line = line.strip()
-            components.append((line, file))
-    
-    return components
-
 def get_main(source_files):
 
     for source_file in source_files:
@@ -71,21 +32,153 @@ def get_main(source_files):
         contents = f.read()
         f.close()
 
-        search = re.search(r'int\s+main\s*\(', contents)
+        search = re.search(r'int\s+main\s*\(.*\)', contents)
         if search == None: continue
+        entry = search.group()
 
         contents = re.sub(r'int\s+main\s*\(', 'int _main(', contents)
-        return contents
+        return source_file, contents, entry
     
-    return None
+    return None, None, None
+
+def get_header_files(main_file):
+
+    def recurse(file, list):
+
+        f = open(file, 'r')
+        lines = f.readlines()
+        f.close()
+
+        for line in lines:
+
+            # Find all #include preprocessor statements
+            search = re.search(r'^#include\s*["<].*[">].*', line)
+            if search == None: continue
+            
+            # Get the filename that was included.
+            line = re.sub(r'^#include\s*["<]', '', line)
+            line = re.sub(r'[">].*', '', line)
+            line = line.strip()
+
+            # Check if this file is in the include directory.
+            path = './../include/' + line
+            if not os.path.isfile(path): continue
+
+            # Add it to the list and recurse into it.
+            path = os.path.abspath(path)
+            if path in list: continue
+            list.append(path)
+            recurse(path, list)
+        
+        return list
+
+    return recurse(main_file, [])
+
+def get_classes(files):
+
+    classes = []
+    for file in files:
+        
+        f = open(file, 'r')
+        lines = f.readlines()
+        f.close()
+
+        for i in range(len(lines)):
+
+            # Find all classes that inherit another class.
+            line = lines[i]
+            search = re.search(r'.*class\s+.*\s*:.*', line)
+            if search == None: 
+                continue
+
+            # Get the class name.
+            class_name = re.sub(r'.*class\s*', '', line)
+            class_name = re.sub(r'\s*:.*', '', class_name)
+            class_name = class_name.strip()
+
+            # Get the starting and ending bounds of this class.
+            class_start = i + 1
+            class_end = -1
+            for j in range(i+1, len(lines)):
+                class_line = lines[j]
+                if '};' in class_line:
+                    class_end = j+1
+                    break
+
+            # If the class is not valid don't bother.
+            if class_end == -1:
+                continue
+
+            # Determine if there are public methods in the class.
+            public_start = -1
+            for j in range(class_start, class_end):
+                if 'public' in lines[j]:
+                    public_start = j
+                    break
+
+            # If there are no public methods, then there is no public empty constructor.
+            if public_start == -1:
+                continue
+
+            for j in range(public_start, class_end):
+            
+                # Reached the end of the public definitions, no empty constructor.
+                if 'protected' in lines[j] or 'private' in lines[j]: continue
+
+                # Check if the current line has an empty constructor.
+                regex = re.compile(f'\s*{class_name}\s*\(\s*\)\s*;.*')
+                search = regex.match(lines[j])
+                if search == None: continue
+
+                # If it has an empty constructor which is public, then add it to the list.
+                classes.append(class_name)
+
+    return classes
+
+def create_class(class_name):
+    return f'void* {class_name}_Create() ' + '{return new ' + class_name + '();}\n'
+
+def add_class(class_name):
+    result = f"\t{class_name} {class_name}Object; if (dynamic_cast<Component*>(&{class_name}Object) != nullptr) "
+    result += "{ComponentFactory::add(\"" + class_name + "\", " + class_name + "_Create);}\n"
+    return result
+
+def add_main(entry):
+
+    search = re.search(r'\(.*\)', entry)
+    args_string = search.group()
+    args_string = re.sub(r'[\(\)]', '', args_string)
+    args = args_string.split(',')
+
+    for i in range(len(args)):
+        split = re.split(r'[\s\*]', args[i])
+        if len(split) > 1:
+            args[i] = split[-1]
+            args[i] = re.sub(r'\[\]', '', args[i])
+            args[i] = args[i].strip()
+
+    result = entry + '{\n'
+    result += '\t_register();\n'
+    result += '\t_main('
+    for i in range(len(args) - 1): result += args[i] + ', '
+    if len(args) > 0: result += args[-1] + ');\n'
+    result += '\treturn 0;\n'
+    result += '}\n'
+
+    return result
 
 def main():
 
-    header_files = get_header_files()
     source_files = get_source_files()
-    components = get_components(header_files)
-    main_contents = get_main(source_files)
+    main_file, main_contents, main_entry = get_main(source_files)
+    header_files = get_header_files(main_file)
 
+    class_files = []
+    class_files.append(main_file)
+    class_files.extend(header_files)
+
+    classes = get_classes(class_files)
+    
     f = open('main.cpp', 'w')
     f.write(HEADER)
     
@@ -93,17 +186,18 @@ def main():
     else: f.write(main_contents)
     f.write('\n\n')
 
-    for name, file in components:
-        f.write(f'#include "{file}"\n')
-    f.write('\n')
-
+    for c in classes:
+        f.write(create_class(c))
+    f.write("\n")
+    
     f.write('void _register() {\n')
-    for name, file in components:
-        f.write(f'\tComponentFactory::add("{name}", {name}::create);\n')
-
+    for c in classes:
+        f.write(add_class(c))
     f.write("}\n\n")
-    f.write(MAIN)
-    f.close()
+
+    f.write(add_main(main_entry))
+
+    
 
 if __name__ == '__main__':
     main()

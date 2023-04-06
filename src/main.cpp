@@ -72,7 +72,7 @@ void TitleInit(Scene* scene) {
 
 }
 
-int main() {
+int main(int argc, char* argv[]) {
     return Engine::run("Title", "saves/save.scene");
     //return Engine::run("Title", TitleInit);
 }
