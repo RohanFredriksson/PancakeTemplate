@@ -187,10 +187,9 @@ def add_main(entry):
 
     result = entry + '{\n'
     result += '\t_register();\n'
-    result += '\t_main('
+    result += '\treturn _main('
     for i in range(len(args) - 1): result += args[i] + ', '
     if len(args) > 0: result += args[-1] + ');\n'
-    result += '\treturn 0;\n'
     result += '}\n'
 
     return result
