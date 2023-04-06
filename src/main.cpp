@@ -1,8 +1,6 @@
 #include "pancake/pancake.hpp"
 #include "title.hpp"
 
-#include <iostream>
-
 using glm::vec2;
 using glm::vec4;
 
