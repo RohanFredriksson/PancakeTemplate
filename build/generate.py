@@ -13,6 +13,34 @@ using std::string;
 
 """
 
+class Class:
+
+    def __init__(self, contents):
+
+        # Get the name of the class.
+        match = re.search(r'class\s+[a-zA-Z_][a-zA-Z0-9_]*', contents, flags=re.DOTALL)
+        name = match.group()
+        name = re.sub(r'class\s+', '', name)
+        name = name.strip()
+        self.name = name
+
+        # Get the classes that this class inherits.
+        self.inherits = []
+        match = re.search(r'class\s+.*:.*{', contents, flags=re.DOTALL)
+        if match != None:
+
+            # Get all the classes that it inherits.
+            bases_string = match.group()
+            bases_string = re.sub(r'class\s+.*:', '', bases_string)
+            bases_string = re.sub(r'{', '', bases_string)
+
+            # Get the names of all classes it inherits.
+            bases = bases_string.split(',')
+            for i in range(len(bases)): 
+                bases[i] = bases[i].strip()
+                split = bases[i].split()
+                self.inherits.append(split[1])
+
 def get_source_files():
 
     source_files = []
@@ -74,74 +102,74 @@ def get_header_files(main_file):
 
     return recurse(main_file, [])
 
-def get_classes(files):
+def get_components(files):
 
-    classes = []
+    classes = {}
+    component_classes = {"Component", "TransformableComponent"}
+    components = set()
+
     for file in files:
         
+        # Read the entire file as a string.
         f = open(file, 'r')
-        lines = f.readlines()
-        f.close()
+        contents = f.read()
 
-        for i in range(len(lines)):
+        # Strip all comments from the code.
+        contents = re.sub(r'//.*?(?:\n|$)', '\n', contents)
+        contents = re.sub(r'/\*.*?\*/', '', contents, flags=re.DOTALL)
 
-            # Find all classes that inherit another class.
-            line = lines[i]
-            search = re.search(r'.*class\s+.*\s*:.*', line)
-            if search == None: 
-                continue
+        # While the word class still exists in the code.
+        while True:
 
-            # Get the class name.
-            class_name = re.sub(r'.*class\s*', '', line)
-            class_name = re.sub(r'\s*:.*', '', class_name)
-            class_name = class_name.strip()
+            # Find the next class in the file
+            match = re.search(r'class\s+.*{', contents, flags=re.DOTALL)
+            if match == None: break
 
-            # Get the starting and ending bounds of this class.
-            class_start = i + 1
-            class_end = -1
-            for j in range(i+1, len(lines)):
-                class_line = lines[j]
-                if '};' in class_line:
-                    class_end = j+1
-                    break
-
-            # If the class is not valid don't bother.
-            if class_end == -1:
-                continue
-
-            # Determine if there are public methods in the class.
-            public_start = -1
-            for j in range(class_start, class_end):
-                if 'public' in lines[j]:
-                    public_start = j
-                    break
-
-            # If there are no public methods, then there is no public empty constructor.
-            if public_start == -1:
-                continue
-
-            for j in range(public_start, class_end):
+            # Find the start and end of the class.
+            start = match.start()
+            end = contents.find('};')+1
             
-                # Reached the end of the public definitions, no empty constructor.
-                if 'protected' in lines[j] or 'private' in lines[j]: continue
+            # Create a new class object.
+            class_contents = contents[start:end]
+            new = Class(class_contents)
+            classes[new.name] = new
 
-                # Check if the current line has an empty constructor.
-                regex = re.compile(f'\s*{class_name}\s*\(\s*\)\s*;.*')
-                search = regex.match(lines[j])
-                if search == None: continue
+            # Move to seek the next class.
+            contents = contents[end:]
 
-                # If it has an empty constructor which is public, then add it to the list.
-                classes.append(class_name)
+    # Recursively find all component classes.
+    def recurse(c):
 
-    return classes
+        if c in component_classes:
+            return True
 
-def create_class(class_name):
+        for b in c.inherits:
+
+            if b in component_classes: 
+                component_classes.add(c.name)
+                components.add(c.name)
+                return True
+
+            if b in classes:
+                if recurse(b):
+                    component_classes.add(c.name)
+                    components.add(c.name)
+                    return True
+
+        return False
+
+    # Run the recursive algorithm on each class.
+    for c in classes.values():
+        recurse(c)
+    
+    # Return the list of newly discovered components.
+    return list(components)
+
+def create_component(class_name):
     return f'void* {class_name}_Create() ' + '{return new ' + class_name + '();}\n'
 
-def add_class(class_name):
-    result = f"\t{class_name} {class_name}Object; if (dynamic_cast<Component*>(&{class_name}Object) != nullptr) "
-    result += "{ComponentFactory::add(\"" + class_name + "\", " + class_name + "_Create);}\n"
-    return result
+def add_component(class_name):
+    return "\tComponentFactory::add(\"" + class_name + "\", " + class_name + "_Create);\n"
 
 def add_main(entry):
 
@@ -177,8 +205,8 @@ def main():
     class_files.append(main_file)
     class_files.extend(header_files)
 
-    classes = get_classes(class_files)
-    
+    components = get_components(class_files)
+
     f = open('main.cpp', 'w')
     f.write(HEADER)
     
@@ -186,18 +214,16 @@ def main():
     else: f.write(main_contents)
     f.write('\n\n')
 
-    for c in classes:
-        f.write(create_class(c))
+    for c in components:
+        f.write(create_component(c))
     f.write("\n")
     
     f.write('void _register() {\n')
-    for c in classes:
-        f.write(add_class(c))
+    for c in components:
+        f.write(add_component(c))
     f.write("}\n\n")
 
     f.write(add_main(main_entry))
-
-    
 
 if __name__ == '__main__':
     main()
