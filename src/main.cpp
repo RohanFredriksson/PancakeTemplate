@@ -18,6 +18,7 @@ void TitleInit(Scene* scene) {
     TextRenderer* textrenderer;
     AudioPlayer* audioplayer;
     TitleComponent* titlecomponent;
+    FadeFromBlack* fadefromblack;
 
     // BOX 1
     entity = new Entity(vec2(-4.5f, 5.0f), vec2(1.0f, 1.0f), 0.0f);
@@ -28,10 +29,11 @@ void TitleInit(Scene* scene) {
     entity->addComponent(spriterenderer);
 
     rigidbody = new Rigidbody();
-    rigidbody->setRestitution(0.2f);
+    rigidbody->setRestitution(0.5f);
     rigidbody->setFriction(0.0f);
     rigidbody->setVelocity(vec2(1.0f, 0.0f));
-    rigidbody->setFixedOrientation(true);
+    rigidbody->setAngularVelocity(-0.5f);
+    rigidbody->setFixedOrientation(false);
 
     box = new Box();
     box->setMass(1.0f);
@@ -68,9 +70,16 @@ void TitleInit(Scene* scene) {
     entity->addComponent(rigidbody);
     scene->addEntity(entity);
 
+    // FADE ENTITY
+    entity = new Entity(vec2(0.0f, 0.0f), vec2(1.0f, 1.0f), 0.0f);
+    fadefromblack = new FadeFromBlack();
+    fadefromblack->setDuration(1.0f);
+    entity->addComponent(fadefromblack);
+    scene->addEntity(entity);
+
 }
 
 int main(int argc, char* argv[]) {
-    return Engine::run("Title", "saves/save.scene");
-    //return Engine::run("Title", TitleInit);
+    //return Engine::run("Title", "saves/save.scene");
+    return Engine::run("Title", TitleInit);
 }
