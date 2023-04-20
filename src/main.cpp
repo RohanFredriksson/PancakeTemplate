@@ -6,75 +6,36 @@ using glm::vec4;
 
 void TitleInit(Scene* scene) {
 
-    Spritesheet::load("assets/textures/faces.png");
+    Spritesheet::load("assets/textures/king.png");
 
     Entity* entity;
-    Texture* texture;
-    Sprite* sprite;
     SpriteRenderer* spriterenderer;
-    Box* box;
-    Circle* circle;
-    Rigidbody* rigidbody;
-    TextRenderer* textrenderer;
-    AudioPlayer* audioplayer;
-    TitleComponent* titlecomponent;
-    FadeFromBlack* fadefromblack;
+    Animation* animation;
+    AnimationState* state;
 
-    // BOX 1
-    entity = new Entity(vec2(-4.5f, 5.0f), vec2(1.0f, 1.0f), 0.0f);
-
-    sprite = SpritePool::get("armaan");
+    // Background
+    entity = new Entity(vec2(0.0f, 0.0f), vec2(5.0f, 5.0f), 0.0f);
     spriterenderer = new SpriteRenderer();
-    spriterenderer->setSprite(sprite);
+    spriterenderer->setZIndex(-1);
+    spriterenderer->setColour(vec4(0.5f, 0.0f, 0.5f, 1.0f));
     entity->addComponent(spriterenderer);
-
-    rigidbody = new Rigidbody();
-    rigidbody->setRestitution(0.5f);
-    rigidbody->setFriction(0.0f);
-    rigidbody->setVelocity(vec2(1.0f, 0.0f));
-    rigidbody->setAngularVelocity(-0.5f);
-    rigidbody->setFixedOrientation(false);
-
-    box = new Box();
-    box->setMass(1.0f);
-    box->setSize(vec2(1.0f, 1.0f));
-    rigidbody->addCollider(box);
-    entity->addComponent(rigidbody);
-
-    audioplayer = new AudioPlayer();
-    audioplayer->setAudioWave(AudioPool::get("assets/audio/click.mp3"));
-    entity->addComponent(audioplayer);
-
-    titlecomponent = new TitleComponent();
-    entity->addComponent(titlecomponent);
-        
     scene->addEntity(entity);
 
-    // BOX 2
-    entity = new Entity(vec2(0.0f, 0.0f), vec2(11.0f, 1.0f), 0.0f);
-    
-    sprite = SpritePool::get("ainsley");
+    // Character
+    entity = new Entity(vec2(0.0f, 0.0f), vec2(1.652f, 2.0f), 0.0f);
     spriterenderer = new SpriteRenderer();
-    spriterenderer->setSprite(sprite);
-    
-    rigidbody = new Rigidbody();
-    rigidbody->setRestitution(1.0f);
-    rigidbody->setFriction(0.0f);
-    
-    box = new Box();
-    box->setMass(0.0f);
-    box->setSize(vec2(11.0f, 1.0f));
-    rigidbody->addCollider(box);
-
+    animation = new Animation();
+    state = new AnimationState();
+    state->setTitle("walking");
+    state->setLoop(true);
+    state->addFrame(SpritePool::get("king0"), 0.15f);
+    state->addFrame(SpritePool::get("king1"), 0.15f);
+    state->addFrame(SpritePool::get("king2"), 0.15f);
+    state->addFrame(SpritePool::get("king3"), 0.15f);
+    animation->addState(state);
+    animation->setDefaultState("walking");
     entity->addComponent(spriterenderer);
-    entity->addComponent(rigidbody);
-    scene->addEntity(entity);
-
-    // FADE ENTITY
-    entity = new Entity(vec2(0.0f, 0.0f), vec2(1.0f, 1.0f), 0.0f);
-    fadefromblack = new FadeFromBlack();
-    fadefromblack->setDuration(1.0f);
-    entity->addComponent(fadefromblack);
+    entity->addComponent(animation);
     scene->addEntity(entity);
 
 }
