@@ -4,6 +4,8 @@
 using glm::vec2;
 using glm::vec4;
 
+using namespace Pancake;
+
 void TitleInit(Scene* scene) {
 
     Spritesheet::load("assets/textures/king.png");
@@ -41,6 +43,6 @@ void TitleInit(Scene* scene) {
 }
 
 int main(int argc, char* argv[]) {
-    //return Engine::run("Title", "saves/save.scene");
-    return Engine::run("Title", TitleInit);
+    return run("Title", "saves/save.scene");
+    //return Pancake::run("Title", TitleInit);
 }

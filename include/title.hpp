@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pancake/pancake.hpp"
+using namespace Pancake;
 
 class TitleComponent : public Component {
    
