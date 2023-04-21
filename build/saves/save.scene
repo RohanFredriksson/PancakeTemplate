@@ -39,7 +39,7 @@
                         1.0,
                         1.0
                     ],
-                    "id": 1,
+                    "id": 2,
                     "positionOffset": [
                         0.0,
                         0.0
@@ -56,7 +56,7 @@
                 {
                     "currentState": "walking",
                     "defaultState": "walking",
-                    "id": 2,
+                    "id": 3,
                     "states": [
                         {
                             "current": 1,
@@ -79,7 +79,7 @@
                                 }
                             ],
                             "loop": true,
-                            "time": 0.06664887070655823,
+                            "time": 0.06665775179862976,
                             "title": "walking"
                         }
                     ],
@@ -87,7 +87,7 @@
                     "type": "Animation"
                 }
             ],
-            "id": 1,
+            "id": 2,
             "position": [
                 0.0,
                 0.0
@@ -131,6 +131,38 @@
             "size": [
                 5.0,
                 5.0
+            ]
+        },
+        {
+            "components": [
+                {
+                    "duration": 1.0,
+                    "from": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "id": 1,
+                    "time": 0.0,
+                    "to": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "type": "FadeTransition"
+                }
+            ],
+            "id": 1,
+            "position": [
+                0.0,
+                0.0
+            ],
+            "rotation": 0.0,
+            "size": [
+                1.0,
+                1.0
             ]
         }
     ],

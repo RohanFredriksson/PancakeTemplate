@@ -31,6 +31,87 @@
     },
     "entities": [
         {
+            "components": [],
+            "id": 1,
+            "position": [
+                0.0,
+                0.0
+            ],
+            "rotation": 0.0,
+            "size": [
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "components": [
+                {
+                    "colour": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "id": 2,
+                    "positionOffset": [
+                        0.0,
+                        0.0
+                    ],
+                    "rotationOffset": 0.0,
+                    "sizeScale": [
+                        1.0,
+                        1.0
+                    ],
+                    "sprite": "king2",
+                    "type": "SpriteRenderer",
+                    "zIndex": 0
+                },
+                {
+                    "currentState": "walking",
+                    "defaultState": "walking",
+                    "id": 3,
+                    "states": [
+                        {
+                            "current": 2,
+                            "frames": [
+                                {
+                                    "duration": 0.15000000596046448,
+                                    "sprite": "king0"
+                                },
+                                {
+                                    "duration": 0.15000000596046448,
+                                    "sprite": "king1"
+                                },
+                                {
+                                    "duration": 0.15000000596046448,
+                                    "sprite": "king2"
+                                },
+                                {
+                                    "duration": 0.15000000596046448,
+                                    "sprite": "king3"
+                                }
+                            ],
+                            "loop": true,
+                            "time": 0.15000000596046448,
+                            "title": "walking"
+                        }
+                    ],
+                    "transfers": [],
+                    "type": "Animation"
+                }
+            ],
+            "id": 2,
+            "position": [
+                0.0,
+                0.0
+            ],
+            "rotation": 0.0,
+            "size": [
+                1.6519999504089355,
+                2.0
+            ]
+        },
+        {
             "components": [
                 {
                     "colour": [
@@ -63,74 +144,6 @@
             "size": [
                 5.0,
                 5.0
-            ]
-        },
-        {
-            "components": [
-                {
-                    "colour": [
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "id": 1,
-                    "positionOffset": [
-                        0.0,
-                        0.0
-                    ],
-                    "rotationOffset": 0.0,
-                    "sizeScale": [
-                        1.0,
-                        1.0
-                    ],
-                    "sprite": "king3",
-                    "type": "SpriteRenderer",
-                    "zIndex": 0
-                },
-                {
-                    "currentState": "walking",
-                    "defaultState": "walking",
-                    "id": 2,
-                    "states": [
-                        {
-                            "current": 3,
-                            "frames": [
-                                {
-                                    "duration": 0.15000000596046448,
-                                    "sprite": "king0"
-                                },
-                                {
-                                    "duration": 0.15000000596046448,
-                                    "sprite": "king1"
-                                },
-                                {
-                                    "duration": 0.15000000596046448,
-                                    "sprite": "king2"
-                                },
-                                {
-                                    "duration": 0.15000000596046448,
-                                    "sprite": "king3"
-                                }
-                            ],
-                            "loop": true,
-                            "time": 0.0499977171421051,
-                            "title": "walking"
-                        }
-                    ],
-                    "transfers": [],
-                    "type": "Animation"
-                }
-            ],
-            "id": 1,
-            "position": [
-                0.0,
-                0.0
-            ],
-            "rotation": 0.0,
-            "size": [
-                1.6519999504089355,
-                2.0
             ]
         }
     ],
