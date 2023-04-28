@@ -12,10 +12,54 @@ void TitleInit(Scene* scene) {
 
     Entity* entity;
     SpriteRenderer* spriterenderer;
+    TextRenderer* textrenderer;
     Animation* animation;
     AnimationState* state;
     FadeTransition* transition;
 
+    Rigidbody* rigidbody;
+    Circle* circle;
+    Box* box;
+    
+    // Ground
+    entity = new Entity(vec2(0.0f, -5.0f), vec2(1.0f, 1.0f), 0.0f);
+    rigidbody = new Rigidbody();
+    box = new Box();
+    box->setSize(vec2(10.0f, 1.0f));
+    rigidbody->addCollider(box);
+    entity->addComponent(rigidbody);
+    scene->addEntity(entity);
+    
+    // Single Box
+    entity = new Entity(vec2(-2.0f, 0.0f), vec2(1.0f, 1.0f), 0.0f);
+    rigidbody = new Rigidbody();
+    box = new Box();
+    box->setMass(1.0f);
+    box->setSize(vec2(2.0f, 1.0f));
+    box->setRotationOffset(1.0f);
+    rigidbody->addCollider(box);
+    rigidbody->setFriction(0.2f);
+    rigidbody->setRestitution(0.5f);
+    entity->addComponent(rigidbody);
+    scene->addEntity(entity);
+
+    // Double box
+    entity = new Entity(vec2(2.0f, 0.0f), vec2(1.0f, 1.0f), 0.0f);
+    rigidbody = new Rigidbody();
+    box = new Box();
+    box->setMass(0.5f);
+    box->setPositionOffset(vec2(0.5f, 0.0f));
+    box->setSize(vec2(1.0f, 1.0f));
+    rigidbody->addCollider(box);
+    box = new Box();
+    box->setMass(0.5f);
+    box->setPositionOffset(vec2(-0.5f, 0.0f));
+    rigidbody->addCollider(box);
+    rigidbody->setFriction(0.2f);
+    rigidbody->setRestitution(0.5f);
+    entity->addComponent(rigidbody);
+    scene->addEntity(entity);
+    
     // Background
     entity = new Entity(vec2(0.0f, 0.0f), vec2(5.0f, 5.0f), 0.0f);
     spriterenderer = new SpriteRenderer();
@@ -35,7 +79,6 @@ void TitleInit(Scene* scene) {
 
     // Character
     entity = new Entity(vec2(0.0f, 0.0f), vec2(1.652f, 2.0f), 0.0f);
-    spriterenderer = new SpriteRenderer();
     animation = new Animation();
     state = new AnimationState();
     state->setTitle("walking");
@@ -46,13 +89,20 @@ void TitleInit(Scene* scene) {
     state->addFrame(SpritePool::get("king3"), 0.15f);
     animation->addState(state);
     animation->setDefaultState("walking");
-    entity->addComponent(spriterenderer);
     entity->addComponent(animation);
+    scene->addEntity(entity);
+
+    // Text
+    entity = new Entity(vec2(0.0f, 3.0f), vec2(1.0f, 1.0f), 0.0f);
+    textrenderer = new TextRenderer();
+    textrenderer->setText("Hello World!");
+    textrenderer->setColour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
+    entity->addComponent(textrenderer);
     scene->addEntity(entity);
 
 }
 
 int main(int argc, char* argv[]) {
-    return run("Title", "saves/save.scene");
+    return run("Title", "saves/test.scene");
     //return Pancake::run("Title", TitleInit);
 }
