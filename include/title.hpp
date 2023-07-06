@@ -10,3 +10,5 @@ class TitleComponent : public Component {
         void update(float dt) override;    
         
 };
+
+REGISTER(Component, TitleComponent);

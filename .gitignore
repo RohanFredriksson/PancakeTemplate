@@ -2,6 +2,8 @@ build/CMakeFiles
 build/dependencies
 build/cmake_install.cmake
 build/CMakeCache.txt
+build/compile_commands.json
+build/imgui.ini
 build/Makefile
 build/main.cpp
 build/*.exe

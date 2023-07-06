@@ -16,14 +16,7 @@ endif()
 include_directories(include)
 
 file(GLOB_RECURSE source_files src/*.cpp)
-add_custom_command(
-    OUTPUT main.cpp
-    COMMAND ./generate.py ${source_files}
-    DEPENDS ./generate.py ${source_files}
-)
-
-list(FILTER source_files EXCLUDE REGEX ".*main.cpp$")
-add_executable(${PROJECT_NAME} ${source_files} main.cpp)
+add_executable(${PROJECT_NAME} ${source_files})
 
 target_include_directories(${PROJECT_NAME} PUBLIC pancake)
 target_link_libraries(${PROJECT_NAME} PUBLIC pancake)
