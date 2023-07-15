@@ -6,8 +6,24 @@ using namespace Pancake;
 class TitleComponent : public Component {
    
     public:
-        TitleComponent();
-        void update(float dt) override;    
+
+        TitleComponent() : Component("TitleComponent") {
+
+        }
+
+        void update(float dt) override {
+            
+             if (MouseListener::isMouseBeginDown(GLFW_MOUSE_BUTTON_LEFT)) {
+        
+                Component* c = this->getEntity()->getComponent("AudioPlayer");
+                if (c == nullptr) {return;}
+                
+                AudioPlayer* a = dynamic_cast<AudioPlayer*>(c);
+                a->play();
+
+            }
+
+        } 
         
 };
 

@@ -1,5 +1,5 @@
 #include "pancake/pancake.hpp"
-#include "title.hpp"
+#include "mousepanhandler.hpp"
 
 using glm::vec2;
 using glm::vec4;
@@ -9,6 +9,7 @@ using namespace Pancake;
 void TitleInit(Scene* scene) {
 
     Spritesheet::load("assets/textures/king.png");
+    Spritesheet::load("assets/textures/faces.png");
 
     Entity* entity;
     SpriteRenderer* spriterenderer;
@@ -16,11 +17,18 @@ void TitleInit(Scene* scene) {
     Animation* animation;
     AnimationState* state;
     FadeTransition* transition;
+    MousePanHandler* mousepanhandler;
 
     Rigidbody* rigidbody;
     Circle* circle;
     Box* box;
-    
+
+    // Mouse Movement Handler
+    entity = new Entity();
+    mousepanhandler = new MousePanHandler();
+    entity->addComponent(mousepanhandler);
+    scene->addEntity(entity);
+
     // Ground
     entity = new Entity(vec2(0.0f, -5.0f), vec2(1.0f, 1.0f), 0.0f);
     rigidbody = new Rigidbody();
@@ -29,37 +37,36 @@ void TitleInit(Scene* scene) {
     rigidbody->addCollider(box);
     entity->addComponent(rigidbody);
     scene->addEntity(entity);
-    
+
     // Single Box
-    entity = new Entity(vec2(-2.0f, 0.0f), vec2(1.0f, 1.0f), 0.0f);
+    entity = new Entity(vec2(-1.0f, 2.0f), vec2(1.0f, 1.0f), 0.0f);
     rigidbody = new Rigidbody();
     box = new Box();
     box->setMass(1.0f);
-    box->setSize(vec2(2.0f, 1.0f));
-    box->setRotationOffset(1.0f);
+    box->setSize(vec2(0.5f, 1.0f));
+    box->setRotationOffset(0.5f);
     rigidbody->addCollider(box);
-    rigidbody->setFriction(0.2f);
-    rigidbody->setRestitution(0.5f);
+    rigidbody->setFriction(0.15f);
+    rigidbody->setRestitution(0.3f);
     entity->addComponent(rigidbody);
     scene->addEntity(entity);
 
-    // Double box
-    entity = new Entity(vec2(2.0f, 0.0f), vec2(1.0f, 1.0f), 0.0f);
+    // Circle
+    entity = new Entity(vec2(1.5f, 2.0f), vec2(1.0f, 1.0f), 0.0f);
     rigidbody = new Rigidbody();
-    box = new Box();
-    box->setMass(0.5f);
-    box->setPositionOffset(vec2(0.5f, 0.0f));
-    box->setSize(vec2(1.0f, 1.0f));
-    rigidbody->addCollider(box);
-    box = new Box();
-    box->setMass(0.5f);
-    box->setPositionOffset(vec2(-0.5f, 0.0f));
-    rigidbody->addCollider(box);
+    circle = new Circle();
+    circle->setMass(1.0f);
+    circle->setRadius(0.5f);
+    rigidbody->addCollider(circle);
     rigidbody->setFriction(0.2f);
-    rigidbody->setRestitution(0.5f);
+    rigidbody->setRestitution(0.3f);
     entity->addComponent(rigidbody);
+    spriterenderer = new SpriteRenderer();
+    spriterenderer->setSprite(SpritePool::get("ainsley"));
+    entity->addComponent(spriterenderer);
     scene->addEntity(entity);
-    
+
+    /*
     // Background
     entity = new Entity(vec2(0.0f, 0.0f), vec2(5.0f, 5.0f), 0.0f);
     spriterenderer = new SpriteRenderer();
@@ -99,10 +106,11 @@ void TitleInit(Scene* scene) {
     textrenderer->setColour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
     entity->addComponent(textrenderer);
     scene->addEntity(entity);
+    */
 
 }
 
 int main(int argc, char* argv[]) {
-    return run("Title", "saves/test.scene");
-    //return Pancake::run("Title", TitleInit);
+    //return run("Title", "saves/test.scene");
+    return Pancake::run("Title", TitleInit);
 }
