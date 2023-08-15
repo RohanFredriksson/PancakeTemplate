@@ -8,6 +8,7 @@ using namespace Pancake;
 
 void TitleInit(Scene* scene) {
 
+    scene->setName("Title");
     Spritesheet::load("assets/textures/king.png");
     Spritesheet::load("assets/textures/faces.png");
 
@@ -111,6 +112,6 @@ void TitleInit(Scene* scene) {
 }
 
 int main(int argc, char* argv[]) {
-    //return run("Title", "saves/test.scene");
-    return Pancake::run("Title", TitleInit);
+    Pancake::load(TitleInit);
+    Pancake::start();
 }
