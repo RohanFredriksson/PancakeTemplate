@@ -67,7 +67,6 @@ void TitleInit(Scene* scene) {
     entity->addComponent(spriterenderer);
     scene->addEntity(entity);
 
-    /*
     // Background
     entity = new Entity(vec2(0.0f, 0.0f), vec2(5.0f, 5.0f), 0.0f);
     spriterenderer = new SpriteRenderer();
@@ -107,11 +106,12 @@ void TitleInit(Scene* scene) {
     textrenderer->setColour(vec4(1.0f, 1.0f, 1.0f, 1.0f));
     entity->addComponent(textrenderer);
     scene->addEntity(entity);
-    */
 
 }
 
 int main(int argc, char* argv[]) {
+    Pancake::title("Template");
+    Pancake::icon("assets/icons/house.png");
     Pancake::load(TitleInit);
     Pancake::start();
 }

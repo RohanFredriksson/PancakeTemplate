@@ -16,7 +16,11 @@ endif()
 include_directories(include)
 
 file(GLOB_RECURSE source_files src/*.cpp)
-add_executable(${PROJECT_NAME} ${source_files})
+if (WIN32)
+    add_executable(${PROJECT_NAME} ${source_files} resources.rc)
+else()
+    add_executable(${PROJECT_NAME} ${source_files})
+endif()
 
 target_include_directories(${PROJECT_NAME} PUBLIC pancake)
 target_link_libraries(${PROJECT_NAME} PUBLIC pancake)
