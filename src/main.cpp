@@ -27,7 +27,7 @@ void TitleInit(Scene* scene) {
     Circle* circle;
     Box* box;
 
-    // Ground
+    // Ground Sprites
     for (int i = -100; i <= 100; i++) {
         entity = new Entity(i, -4.0f);
         spriterenderer = new SpriteRenderer();
@@ -35,48 +35,14 @@ void TitleInit(Scene* scene) {
         entity->addComponent(spriterenderer);
         scene->addEntity(entity);
     }
-
-    // Mouse Movement Handler
-    //entity = new Entity();
-    //mousepanhandler = new MousePanHandler();
-    //entity->addComponent(mousepanhandler);
-    //scene->addEntity(entity);
-
-    // Ground
+    
+    // Ground Body
     entity = new Entity(vec2(0.0f, -4.0f), vec2(1.0f, 1.0f), 0.0f);
     rigidbody = new Rigidbody();
     box = new Box();
     box->setSize(vec2(21.0f, 1.0f));
     rigidbody->addCollider(box);
     entity->addComponent(rigidbody);
-    scene->addEntity(entity);
-
-    // Single Box
-    entity = new Entity(vec2(-1.0f, 2.0f), vec2(1.0f, 1.0f), 0.0f);
-    rigidbody = new Rigidbody();
-    box = new Box();
-    box->setMass(1.0f);
-    box->setSize(vec2(0.5f, 1.0f));
-    box->setRotationOffset(0.5f);
-    rigidbody->addCollider(box);
-    rigidbody->setFriction(0.15f);
-    rigidbody->setRestitution(0.3f);
-    entity->addComponent(rigidbody);
-    scene->addEntity(entity);
-
-    // Circle
-    entity = new Entity(vec2(1.5f, 2.0f), vec2(1.0f, 1.0f), 0.0f);
-    rigidbody = new Rigidbody();
-    circle = new Circle();
-    circle->setMass(1.0f);
-    circle->setRadius(0.5f);
-    rigidbody->addCollider(circle);
-    rigidbody->setFriction(0.2f);
-    rigidbody->setRestitution(0.3f);
-    entity->addComponent(rigidbody);
-    spriterenderer = new SpriteRenderer();
-    spriterenderer->setSprite(SpritePool::get("chest0"));
-    entity->addComponent(spriterenderer);
     scene->addEntity(entity);
 
     // Background
@@ -88,13 +54,13 @@ void TitleInit(Scene* scene) {
     scene->addEntity(entity);
 
     // Transition
-    entity = new Entity(vec2(0.0f, 0.0f), vec2(1.0f, 1.0f), 0.0f);
+    entity = new Entity();
     transition = new FadeTransition();
-    transition->setDuration(1.0f);
+    transition->setDuration(0.5f);
     transition->setFrom(vec4(0.0f, 0.0f, 0.0f, 1.0f));
     transition->setTo(vec4(0.0f, 0.0f, 0.0f, 0.0f));
     entity->addComponent(transition);
-    //scene->addEntity(entity);
+    scene->addEntity(entity);
 
     // Character
     entity = new Entity(vec2(0.0f, 0.0f), vec2(1.083f, 1.5f), 0.0f);
@@ -134,18 +100,6 @@ void TitleInit(Scene* scene) {
     state->addFrame("king7", 0.15f);
     animation->addState(state);
 
-    animation->addTransfer("idle", "walking", "left");
-    animation->addTransfer("idle", "walking", "right");
-    animation->addTransfer("idle", "jumping", "up");
-    animation->addTransfer("idle", "falling", "down");
-
-    animation->addTransfer("jumping", "falling", "down");
-    animation->addTransfer("jumping", "walking", "ground");
-    animation->addTransfer("walking", "jumping", "up");
-    animation->addTransfer("landing", "jumping", "up");
-
-    
-
     animation->setDefaultState("idle");
     entity->addComponent(animation);
     
@@ -178,6 +132,43 @@ void TitleInit(Scene* scene) {
 
     scene->addEntity(entity);
 
+    // Crates
+    float gap = 0.1f;
+    float width = 0.75f;
+    float height = 0.75f;
+    vec2 cursor = vec2(2, -3.0f);
+
+    for (int i = 3; i > 0; i--) {
+        
+        float start = cursor.x;
+        for (int j = 0; j < i; j++) {
+            
+            entity = new Entity(cursor.x, cursor.y);
+
+            rigidbody = new Rigidbody();
+            box = new Box();
+            box->setMass(3.0f);
+            box->setSize(vec2(0.75f, 0.75f));
+            rigidbody->addCollider(box);
+            rigidbody->setFriction(0.75f);
+            rigidbody->setRestitution(0.3f);
+            entity->addComponent(rigidbody);
+
+            spriterenderer = new SpriteRenderer();
+            spriterenderer->setSprite("crate0");
+            entity->addComponent(spriterenderer);
+
+            scene->addEntity(entity);
+
+            cursor.x += width + gap;
+
+        }
+
+        cursor.x = start + 0.5f * (width + gap);
+        cursor.y += height + 0.1f;
+
+    }
+
     // Text
     entity = new Entity(vec2(0.0f, 3.0f), vec2(1.0f, 1.0f), 0.0f);
     textrenderer = new TextRenderer();
@@ -193,6 +184,7 @@ int main(int argc, char* argv[]) {
     Pancake::icon("assets/icons/house.png");
     Pancake::load(TitleInit);
     Pancake::projection(9);
-    //Pancake::width(1920);
+    Pancake::height(800);
+    Pancake::width(1200);
     Pancake::start();
 }

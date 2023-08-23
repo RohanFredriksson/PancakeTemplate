@@ -23,7 +23,7 @@ class PlayerController : public Component, public CollisionListener {
 
             bool left = KeyListener::isKeyDown(GLFW_KEY_A) || KeyListener::isKeyDown(GLFW_KEY_LEFT);
             bool right = KeyListener::isKeyDown(GLFW_KEY_D) || KeyListener::isKeyDown(GLFW_KEY_RIGHT);
-            bool up = KeyListener::isKeyDown(GLFW_KEY_W) || KeyListener::isKeyDown(GLFW_KEY_SPACE);
+            bool up = KeyListener::isKeyDown(GLFW_KEY_W) || KeyListener::isKeyDown(GLFW_KEY_SPACE) || KeyListener::isKeyDown(GLFW_KEY_UP);
 
             Animation* animation = dynamic_cast<Animation*>(this->getEntity()->getComponent("Animation"));
             Rigidbody* rigidbody = dynamic_cast<Rigidbody*>(this->getEntity()->getComponent("Rigidbody"));
