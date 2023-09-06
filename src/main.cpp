@@ -165,7 +165,7 @@ void TitleInit(Scene* scene) {
         }
 
         cursor.x = start + 0.5f * (width + gap);
-        cursor.y += height + 0.1f;
+        cursor.y += height + gap;
 
     }
 
