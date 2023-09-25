@@ -6,14 +6,6 @@
 
 #include "pancake/pancake.hpp"
 
-namespace SnakeDirection {
-    const glm::ivec2 UP    = glm::ivec2( 0,  1);
-    const glm::ivec2 DOWN  = glm::ivec2( 0, -1);
-    const glm::ivec2 LEFT  = glm::ivec2(-1,  0);
-    const glm::ivec2 RIGHT = glm::ivec2( 1,  0);
-    
-}
-
 class Snake : public Pancake::Component {
    
     private: 
