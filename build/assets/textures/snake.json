@@ -1,0 +1,11 @@
+{
+    "spriteWidth": 16,
+    "spriteHeight": 16,
+    "sprites": [
+        "snake_head",
+        "snake_horizontal",
+        "snake_vertical",
+        "snake_bend",
+        "snake_tail"
+    ]
+}

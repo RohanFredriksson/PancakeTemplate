@@ -20,7 +20,8 @@ class Snake : public Pancake::Component {
 
         std::vector<glm::ivec2> body;
         std::vector<glm::ivec2> inputs;
-        std::vector<Pancake::SpriteRenderer*> sprites;
+        std::vector<Pancake::SpriteRenderer*> bodySprites;
+        std::vector<Pancake::SpriteRenderer*> endSprites;
         
         float progress;
         float speed;
