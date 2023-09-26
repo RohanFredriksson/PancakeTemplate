@@ -180,7 +180,6 @@ void Snake::start() {
     
     // Head of the snake
     Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
     sprite->setSprite("snake_head");
     sprite->setZIndex(2);
     this->getEntity()->addComponent(sprite);
@@ -188,27 +187,27 @@ void Snake::start() {
 
     // Tail of the snake.
     sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
     sprite->setSprite("snake_tail");
-    this->getEntity()->addComponent(sprite);
     sprite->setZIndex(0);
+    this->getEntity()->addComponent(sprite);
     this->endSprites.push_back(sprite);
 
     // Head to body.
     sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
-    sprite->setSprite("snake_horizontal");
     sprite->setZIndex(1);
     this->getEntity()->addComponent(sprite);
     this->endSprites.push_back(sprite);
 
     // Tail to body.
     sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
-    sprite->setSprite("snake_horizontal");
     sprite->setZIndex(1);
     this->getEntity()->addComponent(sprite);
     this->endSprites.push_back(sprite);
+
+    // Initialise the sprite renderers for the snake.
+    this->head();
+    this->tail();
+    this->body(false);
 
 }
 
