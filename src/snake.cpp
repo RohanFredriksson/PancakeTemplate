@@ -15,22 +15,58 @@ Snake::Snake() : Component("Snake") {
     this->speed = 5.0f;
     this->direction = RIGHT;
 
-    for (int i = 0; i < 5; i++) {this->body.push_back(glm::ivec2(-2 + i, 0));}
+    for (int i = 0; i < 5; i++) {this->bodies.push_back(glm::ivec2(-2 + i, 0));}
+
+}
+
+void Snake::head() {
+
+    // Head
+    this->endSprites[0]->setPositionOffset(this->bodies[this->bodies.size()-1].x + this->progress * this->direction.x, this->bodies[this->bodies.size()-1].y + this->progress * this->direction.y);
+    if      (this->direction == LEFT)  {this->endSprites[0]->setRotationOffset(0.0f * M_PI);}
+    else if (this->direction == DOWN)  {this->endSprites[0]->setRotationOffset(0.5f * M_PI);}
+    else if (this->direction == RIGHT) {this->endSprites[0]->setRotationOffset(1.0f * M_PI);}
+    else if (this->direction == UP)    {this->endSprites[0]->setRotationOffset(1.5f * M_PI);}
+
+    // Head to body
+    this->endSprites[2]->setPositionOffset(this->bodies[this->bodies.size()-1].x + 0.5f * this->progress * this->direction.x, this->bodies[this->bodies.size()-1].y + 0.5f * this->progress * this->direction.y);
+    if      (this->direction == LEFT || this->direction == RIGHT) {this->endSprites[2]->setSizeScale(this->progress, 1.0f); this->endSprites[2]->setSprite("snake_horizontal");}
+    else if (this->direction == DOWN || this->direction == UP)    {this->endSprites[2]->setSizeScale(1.0f, this->progress); this->endSprites[2]->setSprite("snake_vertical");}
+
+}
+
+void Snake::tail() {
+
+    // Tail
+    this->endSprites[1]->setPositionOffset(this->bodies[0].x + this->progress * (this->bodies[1] - this->bodies[0]).x, this->bodies[0].y + this->progress * (this->bodies[1] - this->bodies[0]).y);
+    if      (this->bodies[1] - this->bodies[0] == LEFT)  {this->endSprites[1]->setRotationOffset(0.0f * M_PI);}
+    else if (this->bodies[1] - this->bodies[0] == DOWN)  {this->endSprites[1]->setRotationOffset(0.5f * M_PI);}
+    else if (this->bodies[1] - this->bodies[0] == RIGHT) {this->endSprites[1]->setRotationOffset(1.0f * M_PI);}
+    else if (this->bodies[1] - this->bodies[0] == UP)    {this->endSprites[1]->setRotationOffset(1.5f * M_PI);}
+
+    // Tail to body
+    this->endSprites[3]->setPositionOffset((this->bodies[1].x + this->bodies[0].x + this->progress * (this->bodies[1] - this->bodies[0]).x) * 0.5f, (this->bodies[1].y + this->bodies[0].y + this->progress * (this->bodies[1] - this->bodies[0]).y) * 0.5f);
+    if      (((this->bodies[1] - this->bodies[0]) == LEFT) || ((this->bodies[1] - this->bodies[0]) == RIGHT)) {this->endSprites[3]->setSizeScale(1.0f - this->progress, 1.0f); this->endSprites[3]->setSprite("snake_horizontal");}
+    else if (((this->bodies[1] - this->bodies[0]) == DOWN) || ((this->bodies[1] - this->bodies[0]) == UP))    {this->endSprites[3]->setSizeScale(1.0f, 1.0f - this->progress); this->endSprites[3]->setSprite("snake_vertical");}
+
+}
+
+void Snake::body() {
 
 }
 
 void Snake::start() {
 
-    for (int i = 0; i < this->body.size(); i++) {
+    for (int i = 0; i < this->bodies.size(); i++) {
         Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
-        sprite->setPositionOffset(this->body[i].x, this->body[i].y);
+        sprite->setPositionOffset(this->bodies[i].x, this->bodies[i].y);
         this->getEntity()->addComponent(sprite);
         this->bodySprites.push_back(sprite);
     }
     
     // Head of the snake
     Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->body[this->body.size()-1].x, this->body[this->body.size()-1].y);
+    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
     sprite->setSprite("snake_head");
     sprite->setZIndex(2);
     this->getEntity()->addComponent(sprite);
@@ -38,14 +74,23 @@ void Snake::start() {
 
     // Tail of the snake.
     sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->body[0].x, this->body[0].y);
-    sprite->setColour(0.0, 1.0f, 1.0f, 1.0f);
+    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
+    sprite->setSprite("snake_tail");
     this->getEntity()->addComponent(sprite);
+    sprite->setZIndex(0);
     this->endSprites.push_back(sprite);
 
     // Head to body.
     sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->body[this->body.size()-1].x, this->body[this->body.size()-1].y);
+    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
+    sprite->setSprite("snake_horizontal");
+    sprite->setZIndex(1);
+    this->getEntity()->addComponent(sprite);
+    this->endSprites.push_back(sprite);
+
+    // Tail to body.
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
     sprite->setSprite("snake_horizontal");
     sprite->setZIndex(1);
     this->getEntity()->addComponent(sprite);
@@ -72,33 +117,19 @@ void Snake::update(float dt) {
     this->progress += this->speed * dt;
 
     // Check if there is a crash
-    next = this->body[this->body.size()-1] + this->direction;
-    for (int i = 0; i < this->body.size(); i++) {
-        if (this->body[i] == next) {this->alive = false;}
+    next = this->bodies[this->bodies.size()-1] + this->direction;
+    for (int i = 0; i < this->bodies.size(); i++) {
+        if (this->bodies[i] == next) {this->alive = false;}
     }
 
     // Rerender the head and tail of the snake.
-
-    // Head
-    this->endSprites[0]->setPositionOffset(this->body[this->body.size()-1].x + this->progress * this->direction.x, this->body[this->body.size()-1].y + this->progress * this->direction.y);
-    if      (this->direction == LEFT)  {this->endSprites[0]->setRotationOffset(0.0f * M_PI);}
-    else if (this->direction == DOWN)  {this->endSprites[0]->setRotationOffset(0.5f * M_PI);}
-    else if (this->direction == RIGHT) {this->endSprites[0]->setRotationOffset(1.0f * M_PI);}
-    else if (this->direction == UP)    {this->endSprites[0]->setRotationOffset(1.5f * M_PI);}
-
-    // Tail
-    this->endSprites[1]->setPositionOffset(this->body[0].x + this->progress * (this->body[1] - this->body[0]).x, this->body[0].y + this->progress * (this->body[1] - this->body[0]).y);
-
-    // Head to body
-    this->endSprites[2]->setPositionOffset(this->body[this->body.size()-1].x + 0.5f * this->progress * this->direction.x, this->body[this->body.size()-1].y + 0.5f * this->progress * this->direction.y);
-    if      (this->direction == LEFT || this->direction == RIGHT) {this->endSprites[2]->setSizeScale(this->progress * this->direction.x, 1.0f); this->endSprites[2]->setSprite("snake_horizontal");}
-    else if (this->direction == DOWN || this->direction == UP)    {this->endSprites[2]->setSizeScale(1.0f, this->progress * this->direction.y); this->endSprites[2]->setSprite("snake_vertical");}
+    this->head();
+    this->tail();
 
     // Move the snake if it has reached the next unit.
     if (this->progress < 1.0f) {return;}
-
-    this->body.push_back(this->body[this->body.size()-1] + this->direction);
-    this->body.erase(this->body.begin());
+    this->bodies.push_back(this->bodies[this->bodies.size()-1] + this->direction);
+    this->bodies.erase(this->bodies.begin());
 
     // Take the next input from the queue if there is one.
     bool changed = false;
@@ -117,9 +148,9 @@ void Snake::update(float dt) {
 
     // Determine the number of nodes in the snake.
     std::vector<glm::ivec2> nodes;
-    nodes.push_back(this->body[this->body.size()-1]);
-    for (int i = this->body.size()-2; i > 1; i--) {if (this->body[i+1] - this->body[i] != this->body[i] - this->body[i-1]) {nodes.push_back(this->body[i]);}}
-    nodes.push_back(this->body[1]);
+    nodes.push_back(this->bodies[this->bodies.size()-1]);
+    for (int i = this->bodies.size()-2; i > 1; i--) {if (this->bodies[i+1] - this->bodies[i] != this->bodies[i] - this->bodies[i-1]) {nodes.push_back(this->bodies[i]);}}
+    nodes.push_back(this->bodies[1]);
 
     // Put the bend sprites where the snake bends.
     Pancake::SpriteRenderer* sprite;
@@ -173,12 +204,12 @@ void Snake::update(float dt) {
 
         // Create a new sprite renderer for the bend.
         sprite = new Pancake::SpriteRenderer();
-        sprite->setPositionOffset(this->body[this->body.size()-1].x, this->body[this->body.size()-1].y);
+        sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
         sprite->setSprite("snake_bend");
         sprite->setZIndex(1);
 
         // Determine the direction of the bend.
-        glm::ivec2 p = this->body[this->body.size()-1] - this->body[this->body.size()-2];
+        glm::ivec2 p = this->bodies[this->bodies.size()-1] - this->bodies[this->bodies.size()-2];
         p.x = p.x > 0 ? 1 : (p.x < 0 ? -1 : 0);
         p.y = p.y > 0 ? 1 : (p.y < 0 ? -1 : 0);
         
@@ -193,5 +224,37 @@ void Snake::update(float dt) {
         this->bodySprites.push_back(sprite);
 
     }
+
+    // Check if the tail requires a bend.
+    if ((this->bodies[1] - this->bodies[0]) != (this->bodies[2] - this->bodies[1])) {
+        
+        // Create a new sprite renderer for the bend.
+        sprite = new Pancake::SpriteRenderer();
+        sprite->setPositionOffset(this->bodies[1].x, this->bodies[1].y);
+        sprite->setSprite("snake_bend");
+        sprite->setZIndex(1);
+
+        // Determine the direction of the bend.
+        glm::ivec2 p = this->bodies[1] - this->bodies[0];
+        p.x = p.x > 0 ? 1 : (p.x < 0 ? -1 : 0);
+        p.y = p.y > 0 ? 1 : (p.y < 0 ? -1 : 0);
+        
+        glm::ivec2 n = this->bodies[2] - this->bodies[1];
+        n.x = n.x > 0 ? 1 : (n.x < 0 ? -1 : 0);
+        n.y = n.y > 0 ? 1 : (n.y < 0 ? -1 : 0);
+
+        // Rotate the bend sprite if necessary.
+        if      ((p == LEFT && n == UP) || (p == DOWN && n == RIGHT)) {sprite->setRotationOffset(1.0f * M_PI);}
+        else if ((p == RIGHT && n == UP) || (p == DOWN && n == LEFT)) {sprite->setRotationOffset(1.5f * M_PI);}
+        else if ((p == UP && n == RIGHT) || (p == LEFT && n == DOWN)) {sprite->setRotationOffset(0.5f * M_PI);}
+
+        // Add the sprite renderer.
+        this->getEntity()->addComponent(sprite);
+        this->bodySprites.push_back(sprite);
+
+    }
+
+    // After updating the body, we need to fix the tail connection.
+    this->tail();
 
 }

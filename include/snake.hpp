@@ -10,7 +10,7 @@ class Snake : public Pancake::Component {
    
     private: 
 
-        std::vector<glm::ivec2> body;
+        std::vector<glm::ivec2> bodies;
         std::vector<glm::ivec2> inputs;
         std::vector<Pancake::SpriteRenderer*> bodySprites;
         std::vector<Pancake::SpriteRenderer*> endSprites;
@@ -21,6 +21,10 @@ class Snake : public Pancake::Component {
 
         bool alive;
         bool dirty;
+
+        void head();
+        void tail();
+        void body();
 
     public:
 
