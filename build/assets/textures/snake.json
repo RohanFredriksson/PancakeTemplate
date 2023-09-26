@@ -6,6 +6,7 @@
         "snake_horizontal",
         "snake_vertical",
         "snake_bend",
-        "snake_tail"
+        "snake_tail",
+        "snake_food"
     ]
 }

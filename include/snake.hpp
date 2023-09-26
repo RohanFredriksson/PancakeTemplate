@@ -1,6 +1,6 @@
 #pragma once
 
-
+#include <array>
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -12,19 +12,21 @@ class Snake : public Pancake::Component {
 
         std::vector<glm::ivec2> bodies;
         std::vector<glm::ivec2> inputs;
-        std::vector<Pancake::SpriteRenderer*> bodySprites;
-        std::vector<Pancake::SpriteRenderer*> endSprites;
+        std::vector<Pancake::SpriteRenderer*> sprites; // Never deleted at runtime.
+        std::vector<Pancake::SpriteRenderer*> dynamics; // Dynamic sprites.
+
+        std::array<glm::ivec2, 2> bounds;
+        glm::ivec2 food;
         
+        bool alive;
         float progress;
         float speed;
         glm::ivec2 direction;
-
-        bool alive;
-        bool dirty;
-
+        
         void head();
         void tail();
         void body(bool changed);
+        void consume();
 
     public:
 

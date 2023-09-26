@@ -7,6 +7,14 @@ void SnakeInit(Pancake::Scene* scene) {
     Pancake::Spritesheet::load("assets/textures/snake.png");
 
     Pancake::Entity* entity = new Pancake::Entity();
+    Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
+    sprite->setSizeScale(100, 100);
+    sprite->setColour(0.5f, 0.5f ,0.5f, 1.0f);
+    sprite->setZIndex(-1);
+    entity->addComponent(sprite);
+    scene->addEntity(entity);
+
+    entity = new Pancake::Entity();
     Snake* snake = new Snake();
     entity->addComponent(snake);
     scene->addEntity(entity);
