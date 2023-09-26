@@ -24,7 +24,7 @@ class Snake : public Pancake::Component {
 
         void head();
         void tail();
-        void body();
+        void body(bool changed);
 
     public:
 

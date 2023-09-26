@@ -51,98 +51,8 @@ void Snake::tail() {
 
 }
 
-void Snake::body() {
+void Snake::body(bool changed) {
 
-}
-
-void Snake::start() {
-
-    for (int i = 0; i < this->bodies.size(); i++) {
-        Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
-        sprite->setPositionOffset(this->bodies[i].x, this->bodies[i].y);
-        this->getEntity()->addComponent(sprite);
-        this->bodySprites.push_back(sprite);
-    }
-    
-    // Head of the snake
-    Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
-    sprite->setSprite("snake_head");
-    sprite->setZIndex(2);
-    this->getEntity()->addComponent(sprite);
-    this->endSprites.push_back(sprite);
-
-    // Tail of the snake.
-    sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
-    sprite->setSprite("snake_tail");
-    this->getEntity()->addComponent(sprite);
-    sprite->setZIndex(0);
-    this->endSprites.push_back(sprite);
-
-    // Head to body.
-    sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
-    sprite->setSprite("snake_horizontal");
-    sprite->setZIndex(1);
-    this->getEntity()->addComponent(sprite);
-    this->endSprites.push_back(sprite);
-
-    // Tail to body.
-    sprite = new Pancake::SpriteRenderer();
-    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
-    sprite->setSprite("snake_horizontal");
-    sprite->setZIndex(1);
-    this->getEntity()->addComponent(sprite);
-    this->endSprites.push_back(sprite);
-
-}
-
-void Snake::update(float dt) {
-
-    // If the snake is dead, don't update it.
-    if (!this->alive) {return;}
-
-    // Check for key presses.
-    glm::ivec2 next;
-    bool pressed = false;
-    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_UP)) {next = UP; pressed = true;}
-    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_DOWN)) {next = DOWN; pressed = true;}
-    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_RIGHT)) {next = RIGHT; pressed = true;}
-    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_LEFT)) {next = LEFT; pressed = true;}
-
-    if (pressed && this->inputs.size() == 0 && next != this->direction && next != -1 * this->direction) {this->inputs.push_back(next);}
-    else if (pressed && this->inputs.size() > 0 && this->inputs.size() < 3 && next != this->inputs[0] && next != -1 * this->inputs[0]) {this->inputs.push_back(next);}
-
-    this->progress += this->speed * dt;
-
-    // Check if there is a crash
-    next = this->bodies[this->bodies.size()-1] + this->direction;
-    for (int i = 0; i < this->bodies.size(); i++) {
-        if (this->bodies[i] == next) {this->alive = false;}
-    }
-
-    // Rerender the head and tail of the snake.
-    this->head();
-    this->tail();
-
-    // Move the snake if it has reached the next unit.
-    if (this->progress < 1.0f) {return;}
-    this->bodies.push_back(this->bodies[this->bodies.size()-1] + this->direction);
-    this->bodies.erase(this->bodies.begin());
-
-    // Take the next input from the queue if there is one.
-    bool changed = false;
-    if (this->inputs.size() > 0) {
-        this->direction = this->inputs[0]; 
-        this->inputs.erase(this->inputs.begin());
-        changed = true;
-    }
-
-    // Reset the progress.
-    this->progress -= 1.0f;
-
-    // Rerender the body
     for (int i = 0; i < this->bodySprites.size(); i++) {this->bodySprites[i]->kill();}
     this->bodySprites.clear();
 
@@ -256,5 +166,97 @@ void Snake::update(float dt) {
 
     // After updating the body, we need to fix the tail connection.
     this->tail();
+
+}
+
+void Snake::start() {
+
+    for (int i = 0; i < this->bodies.size(); i++) {
+        Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
+        sprite->setPositionOffset(this->bodies[i].x, this->bodies[i].y);
+        this->getEntity()->addComponent(sprite);
+        this->bodySprites.push_back(sprite);
+    }
+    
+    // Head of the snake
+    Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
+    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
+    sprite->setSprite("snake_head");
+    sprite->setZIndex(2);
+    this->getEntity()->addComponent(sprite);
+    this->endSprites.push_back(sprite);
+
+    // Tail of the snake.
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
+    sprite->setSprite("snake_tail");
+    this->getEntity()->addComponent(sprite);
+    sprite->setZIndex(0);
+    this->endSprites.push_back(sprite);
+
+    // Head to body.
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setPositionOffset(this->bodies[this->bodies.size()-1].x, this->bodies[this->bodies.size()-1].y);
+    sprite->setSprite("snake_horizontal");
+    sprite->setZIndex(1);
+    this->getEntity()->addComponent(sprite);
+    this->endSprites.push_back(sprite);
+
+    // Tail to body.
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setPositionOffset(this->bodies[0].x, this->bodies[0].y);
+    sprite->setSprite("snake_horizontal");
+    sprite->setZIndex(1);
+    this->getEntity()->addComponent(sprite);
+    this->endSprites.push_back(sprite);
+
+}
+
+void Snake::update(float dt) {
+
+    // If the snake is dead, don't update it.
+    if (!this->alive) {return;}
+
+    // Check for key presses.
+    glm::ivec2 next;
+    bool pressed = false;
+    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_UP)) {next = UP; pressed = true;}
+    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_DOWN)) {next = DOWN; pressed = true;}
+    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_RIGHT)) {next = RIGHT; pressed = true;}
+    if (Pancake::KeyListener::isKeyBeginDown(GLFW_KEY_LEFT)) {next = LEFT; pressed = true;}
+
+    if (pressed && this->inputs.size() == 0 && next != this->direction && next != -1 * this->direction) {this->inputs.push_back(next);}
+    else if (pressed && this->inputs.size() > 0 && this->inputs.size() < 3 && next != this->inputs[0] && next != -1 * this->inputs[0]) {this->inputs.push_back(next);}
+
+    this->progress += this->speed * dt;
+
+    // Check if there is a crash
+    next = this->bodies[this->bodies.size()-1] + this->direction;
+    for (int i = 0; i < this->bodies.size(); i++) {
+        if (this->bodies[i] == next) {this->alive = false;}
+    }
+
+    // Rerender the head and tail of the snake.
+    this->head();
+    this->tail();
+
+    // Move the snake if it has reached the next unit.
+    if (this->progress < 1.0f) {return;}
+    this->bodies.push_back(this->bodies[this->bodies.size()-1] + this->direction);
+    this->bodies.erase(this->bodies.begin());
+
+    // Take the next input from the queue if there is one.
+    bool changed = false;
+    if (this->inputs.size() > 0) {
+        this->direction = this->inputs[0]; 
+        this->inputs.erase(this->inputs.begin());
+        changed = true;
+    }
+
+    // Reset the progress.
+    this->progress -= 1.0f;
+
+    // Rerender the body
+    this->body(changed);
 
 }
