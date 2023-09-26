@@ -19,6 +19,7 @@ class Snake : public Pancake::Component {
         glm::ivec2 food;
         
         bool alive;
+        bool consumed;
         float progress;
         float speed;
         glm::ivec2 direction;

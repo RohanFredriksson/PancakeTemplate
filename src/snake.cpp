@@ -16,6 +16,7 @@ Snake::Snake() : Component("Snake") {
     this->progress = 0.0f;
     this->speed = 5.0f;
     this->direction = RIGHT;
+    this->consumed = false;
 
     this->bounds[0] = glm::ivec2(-5, -5);
     this->bounds[1] = glm::ivec2( 5,  5);
@@ -43,16 +44,25 @@ void Snake::head() {
 void Snake::tail() {
 
     // Tail
-    this->sprites[1]->setPositionOffset(this->bodies[0].x + this->progress * (this->bodies[1] - this->bodies[0]).x, this->bodies[0].y + this->progress * (this->bodies[1] - this->bodies[0]).y);
+    if (!this->consumed) {this->sprites[1]->setPositionOffset(this->bodies[0].x + this->progress * (this->bodies[1] - this->bodies[0]).x, this->bodies[0].y + this->progress * (this->bodies[1] - this->bodies[0]).y);}
+    else {this->sprites[1]->setPositionOffset(this->bodies[1].x, this->bodies[1].y);}
     if      (this->bodies[1] - this->bodies[0] == LEFT)  {this->sprites[1]->setRotationOffset(0.0f * M_PI);}
     else if (this->bodies[1] - this->bodies[0] == DOWN)  {this->sprites[1]->setRotationOffset(0.5f * M_PI);}
     else if (this->bodies[1] - this->bodies[0] == RIGHT) {this->sprites[1]->setRotationOffset(1.0f * M_PI);}
     else if (this->bodies[1] - this->bodies[0] == UP)    {this->sprites[1]->setRotationOffset(1.5f * M_PI);}
 
     // Tail to body
-    this->sprites[3]->setPositionOffset((this->bodies[1].x + this->bodies[0].x + this->progress * (this->bodies[1] - this->bodies[0]).x) * 0.5f, (this->bodies[1].y + this->bodies[0].y + this->progress * (this->bodies[1] - this->bodies[0]).y) * 0.5f);
-    if      (((this->bodies[1] - this->bodies[0]) == LEFT) || ((this->bodies[1] - this->bodies[0]) == RIGHT)) {this->sprites[3]->setSizeScale(1.0f - this->progress, 1.0f); this->sprites[3]->setSprite("snake_horizontal");}
-    else if (((this->bodies[1] - this->bodies[0]) == DOWN) || ((this->bodies[1] - this->bodies[0]) == UP))    {this->sprites[3]->setSizeScale(1.0f, 1.0f - this->progress); this->sprites[3]->setSprite("snake_vertical");}
+    if (!this->consumed) {
+        this->sprites[3]->setPositionOffset((this->bodies[1].x + this->bodies[0].x + this->progress * (this->bodies[1] - this->bodies[0]).x) * 0.5f, (this->bodies[1].y + this->bodies[0].y + this->progress * (this->bodies[1] - this->bodies[0]).y) * 0.5f);
+        if      (((this->bodies[1] - this->bodies[0]) == LEFT) || ((this->bodies[1] - this->bodies[0]) == RIGHT)) {this->sprites[3]->setSizeScale(1.0f - this->progress, 1.0f); this->sprites[3]->setSprite("snake_horizontal");}
+        else if (((this->bodies[1] - this->bodies[0]) == DOWN) || ((this->bodies[1] - this->bodies[0]) == UP))    {this->sprites[3]->setSizeScale(1.0f, 1.0f - this->progress); this->sprites[3]->setSprite("snake_vertical");}
+    }
+
+    else {
+        this->sprites[3]->setPositionOffset((this->bodies[2].x + this->bodies[1].x) * 0.5f, (this->bodies[2].y + this->bodies[1].y) * 0.5f);
+        if      (((this->bodies[2] - this->bodies[1]) == LEFT) || ((this->bodies[2] - this->bodies[1]) == RIGHT)) {this->sprites[3]->setSprite("snake_horizontal");}
+        else if (((this->bodies[2] - this->bodies[1]) == DOWN) || ((this->bodies[2] - this->bodies[1]) == UP))    {this->sprites[3]->setSprite("snake_vertical");}
+    }
 
 }
 
@@ -294,23 +304,27 @@ void Snake::update(float dt) {
 
     this->progress += this->speed * dt;
 
+    // Rerender the head and tail of the snake.
+    this->head();
+    this->tail();
+
+    // Only check for a crash after a third of the progress
+    // This makes the crashes look better.
+    if (this->progress < 0.33f) {return;}
+
     // Check if there is a crash
     next = this->bodies[this->bodies.size()-1] + this->direction;
     for (int i = 0; i < this->bodies.size(); i++) {
         if (this->bodies[i] == next) {this->alive = false;}
     }
 
-    // Rerender the head and tail of the snake.
-    this->head();
-    this->tail();
-
     // Move the snake if it has reached the next unit.
     if (this->progress < 1.0f) {return;}
     this->bodies.push_back(this->bodies[this->bodies.size()-1] + this->direction);
     
     // Food detection.
-    if (this->bodies[this->bodies.size()-1] == this->food) {this->consume();} // If the snake touches the food, move the food.
-    else {this->bodies.erase(this->bodies.begin());} // If it doesnt pop one of the tail.
+    if (this->bodies[this->bodies.size()-1] == this->food) {this->consume(); this->consumed = true;} // If the snake touches the food, move the food.
+    else {this->bodies.erase(this->bodies.begin()); this->consumed = false;} // If it doesnt pop one of the tail.
 
     // Take the next input from the queue if there is one.
     bool changed = false;
