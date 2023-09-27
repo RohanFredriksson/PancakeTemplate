@@ -10,7 +10,7 @@ class SnakeMap : public Pancake::Component {
    
     private: 
 
-        std::vector<Pancake::SpriteRenderer*> sprites; // Never deleted at runtime.
+        std::vector<Pancake::SpriteRenderer*> sprites;
         std::array<glm::ivec2, 2> bounds;
         bool dirty;
 

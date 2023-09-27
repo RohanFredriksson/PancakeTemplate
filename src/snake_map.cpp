@@ -16,14 +16,25 @@ void SnakeMap::update(float dt) {
     for (Pancake::SpriteRenderer* sprite : this->sprites) {sprite->kill();}
     this->sprites.clear();
 
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    std::mt19937 mt(seed);
+    std::uniform_int_distribution<int> type(0, 6);
+    std::uniform_int_distribution<int> variant(0, 6);
+
     for (int i = bounds[0].x + 1; i < bounds[1].x; i++) {
         for (int j = bounds[0].y + 1; j < bounds[1].y; j++) {
+
             Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
             sprite->setZIndex(-1);
             sprite->setPositionOffset(i, j);
-            if ((i + j) % 2 == 0) {sprite->setSprite("snake_floor_dark");}
-            else {sprite->setSprite("snake_floor_light");}
+
+            std::string name = std::string("snake_floor_") + (((i + j) % 2 == 0) ? "dark" : "light");
+            if (type(mt) == 0) {name += "_variant_" + std::to_string(variant(mt));}
+
+            sprite->setSprite(name);
+
             this->getEntity()->addComponent(sprite);
+
         }
     }
 
