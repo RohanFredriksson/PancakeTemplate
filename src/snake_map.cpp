@@ -36,3 +36,7 @@ void SnakeMap::setBounds(glm::ivec2 min, glm::ivec2 max) {
     this->bounds[1] = max;
     this->dirty = true;
 }
+
+std::array<glm::ivec2, 2> SnakeMap::getBounds() {
+    return this->bounds;
+}

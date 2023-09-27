@@ -2,6 +2,7 @@
 #include <chrono>
 #include <random>
 #include "snake.hpp"
+#include "snake_map.hpp"
 
 namespace {
     const glm::ivec2 UP    = glm::ivec2( 0,  1);
@@ -17,9 +18,6 @@ Snake::Snake() : Component("Snake") {
     this->speed = 5.0f;
     this->direction = RIGHT;
     this->consumed = false;
-
-    this->bounds[0] = glm::ivec2(-5, -5);
-    this->bounds[1] = glm::ivec2( 5,  5);
 
     for (int i = 0; i < 5; i++) {this->bodies.push_back(glm::ivec2(-2 + i, 0));}
 
@@ -184,18 +182,30 @@ void Snake::body(bool changed) {
 
 }
 
+std::array<glm::ivec2, 2> Snake::getBounds() {
+    std::array<glm::ivec2, 2> bounds;
+    SnakeMap* map = dynamic_cast<SnakeMap*>(this->getEntity()->getComponent("SnakeMap"));
+    if (map == nullptr) {bounds[0] = glm::ivec2(-5, -5); bounds[1] = glm::ivec2(5, 5);}
+    else {bounds = map->getBounds();}
+    return bounds;
+}
+
 void Snake::consume() {
 
-    int locations = (this->bounds[1].x - this->bounds[0].x - 1) * (this->bounds[1].y - this->bounds[0].y - 1);
+    // Get the boundaries of the map.
+    std::array<glm::ivec2, 2> bounds = this->getBounds();
+
+    // Determine the total number of positions where food can be on the board.
+    int locations = (bounds[1].x - bounds[0].x - 1) * (bounds[1].y - bounds[0].y - 1);
     
     // If the board is completely full.
-    if (this->bodies.size() == locations) {
+    if (this->bodies.size() >= locations) {
         std::cout << "FULL\n";
     }
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 mt(seed);
-    std::uniform_int_distribution<int> dist(this->bounds[0].x + 1, this->bounds[1].x - 1);
+    std::uniform_int_distribution<int> dist(bounds[0].x + 1, bounds[1].x - 1);
 
     int x;
     int y;
@@ -299,10 +309,10 @@ void Snake::update(float dt) {
     if (this->progress < 0.33f) {return;}
 
     // Check if there is a crash
+    std::array<glm::ivec2, 2> bounds = this->getBounds();
     next = this->bodies[this->bodies.size()-1] + this->direction;
-    for (int i = 0; i < this->bodies.size(); i++) {
-        if (this->bodies[i] == next) {this->alive = false;}
-    }
+    for (int i = 1; i < this->bodies.size(); i++) {if (this->bodies[i] == next) {this->alive = false;}}
+    if (next.x <= bounds[0].x || next.x >= bounds[1].x || next.y <= bounds[0].y || next.y >= bounds[1].y) {this->alive = false;}
 
     // Move the snake if it has reached the next unit.
     if (this->progress < 1.0f) {return;}
@@ -326,9 +336,4 @@ void Snake::update(float dt) {
     // Rerender the body
     this->body(changed);
 
-}
-
-void Snake::setBounds(glm::ivec2 min, glm::ivec2 max) {
-    this->bounds[0] = min;
-    this->bounds[1] = max;
 }

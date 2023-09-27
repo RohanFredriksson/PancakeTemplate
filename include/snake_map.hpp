@@ -19,6 +19,8 @@ class SnakeMap : public Pancake::Component {
         SnakeMap();
         void update(float dt) override;
         void setBounds(glm::ivec2 min, glm::ivec2 max);
+
+        std::array<glm::ivec2, 2> getBounds();
         
 };
 

@@ -15,7 +15,6 @@ class Snake : public Pancake::Component {
         std::vector<Pancake::SpriteRenderer*> sprites; // Never deleted at runtime.
         std::vector<Pancake::SpriteRenderer*> dynamics; // Dynamic sprites.
 
-        std::array<glm::ivec2, 2> bounds;
         glm::ivec2 food;
         
         bool alive;
@@ -28,13 +27,13 @@ class Snake : public Pancake::Component {
         void tail();
         void body(bool changed);
         void consume();
+        std::array<glm::ivec2, 2> getBounds();
 
     public:
 
         Snake();
         void start() override;
         void update(float dt) override;
-        void setBounds(glm::ivec2 min, glm::ivec2 max);
 
 };
 
