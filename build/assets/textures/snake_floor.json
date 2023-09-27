@@ -1,0 +1,22 @@
+{
+    "spriteWidth": 16,
+    "spriteHeight": 16,
+    "sprites": [
+        "snake_floor_light",
+        "snake_floor_light_variant_0",
+        "snake_floor_light_variant_1",
+        "snake_floor_light_variant_2",
+        "snake_floor_light_variant_3",
+        "snake_floor_light_variant_4",
+        "snake_floor_light_variant_5",
+        "snake_floor_light_variant_6",
+        "snake_floor_dark",
+        "snake_floor_dark_variant_0",
+        "snake_floor_dark_variant_1",
+        "snake_floor_dark_variant_2",
+        "snake_floor_dark_variant_3",
+        "snake_floor_dark_variant_4",
+        "snake_floor_dark_variant_5",
+        "snake_floor_dark_variant_6"
+    ]
+}

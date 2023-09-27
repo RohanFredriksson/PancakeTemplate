@@ -1,22 +1,21 @@
 #include "pancake/pancake.hpp"
+#include "snake_map.hpp"
 #include "snake.hpp"
 
 void SnakeInit(Pancake::Scene* scene) {
 
     scene->setName("Snake Game");
     Pancake::Spritesheet::load("assets/textures/snake.png");
+    Pancake::Spritesheet::load("assets/textures/snake_floor.png");
 
     Pancake::Entity* entity = new Pancake::Entity();
-    Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
-    sprite->setSizeScale(100, 100);
-    sprite->setColour(0.5f, 0.5f ,0.5f, 1.0f);
-    sprite->setZIndex(-1);
-    entity->addComponent(sprite);
-    scene->addEntity(entity);
 
-    entity = new Pancake::Entity();
     Snake* snake = new Snake();
     entity->addComponent(snake);
+
+    SnakeMap* map = new SnakeMap();
+    entity->addComponent(map);
+
     scene->addEntity(entity);
 
 }

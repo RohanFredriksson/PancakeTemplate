@@ -34,7 +34,8 @@ class Snake : public Pancake::Component {
         Snake();
         void start() override;
         void update(float dt) override;
-        
+        void setBounds(glm::ivec2 min, glm::ivec2 max);
+
 };
 
 REGISTER(Pancake::Component, Snake);

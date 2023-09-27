@@ -195,7 +195,7 @@ void Snake::consume() {
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 mt(seed);
-    std::uniform_int_distribution<int> dist(this->bounds[0].x, this->bounds[1].x - 1);
+    std::uniform_int_distribution<int> dist(this->bounds[0].x + 1, this->bounds[1].x - 1);
 
     int x;
     int y;
@@ -217,20 +217,6 @@ void Snake::consume() {
     this->food.x = x;
     this->food.y = y;
     this->sprites[4]->setPositionOffset(x, y);
-
-    /*
-    // If most of the board is empty, then pick a random spot as the next food location
-    // see if it collides, if it does, redo until you have got a free space.
-    else if (this->bodies.size() < locations / 2) {
-
-    }
-
-    // If the board is mostly full of snake it is quicker to find all free spots,
-    // and pick one of those randomly.
-    else {
-
-    }
-    */
 
 }
 
@@ -340,4 +326,9 @@ void Snake::update(float dt) {
     // Rerender the body
     this->body(changed);
 
+}
+
+void Snake::setBounds(glm::ivec2 min, glm::ivec2 max) {
+    this->bounds[0] = min;
+    this->bounds[1] = max;
 }
