@@ -16,12 +16,12 @@ namespace {
 Snake::Snake() : Component("Snake") {
 
     this->state = START;
-    this->progress = 0.0f;
+    this->progress = 1.0f;
     this->speed = 5.0f;
     this->direction = RIGHT;
     this->consumed = false;
 
-    for (int i = 0; i < 5; i++) {this->bodies.push_back(glm::ivec2(-2 + i, 0));}
+    for (int i = 0; i < 5; i++) {this->bodies.push_back(glm::ivec2(-3 + i, 0));}
 
 }
 
