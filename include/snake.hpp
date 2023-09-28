@@ -17,7 +17,7 @@ class Snake : public Pancake::Component {
 
         glm::ivec2 food;
         
-        bool alive;
+        int state;
         bool consumed;
         float progress;
         float speed;
@@ -27,13 +27,22 @@ class Snake : public Pancake::Component {
         void tail();
         void body(bool changed);
         void consume();
+
         std::array<glm::ivec2, 2> getBounds();
 
     public:
 
+        enum State {
+            START = 0,
+            PLAY = 1,
+            END = 2
+        };
+
         Snake();
         void start() override;
         void update(float dt) override;
+
+        int getState();
 
 };
 

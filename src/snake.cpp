@@ -5,15 +5,17 @@
 #include "snake_map.hpp"
 
 namespace {
+
     const glm::ivec2 UP    = glm::ivec2( 0,  1);
     const glm::ivec2 DOWN  = glm::ivec2( 0, -1);
     const glm::ivec2 LEFT  = glm::ivec2(-1,  0);
     const glm::ivec2 RIGHT = glm::ivec2( 1,  0);
+
 }
 
 Snake::Snake() : Component("Snake") {
 
-    this->alive = true;
+    this->state = START;
     this->progress = 0.0f;
     this->speed = 5.0f;
     this->direction = RIGHT;
@@ -284,8 +286,16 @@ void Snake::start() {
 
 void Snake::update(float dt) {
 
-    // If the snake is dead, don't update it.
-    if (!this->alive) {return;}
+    // Check if the user wishes to start the game.
+    if (this->state == START) {
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_UP)) {this->state = PLAY;}
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_DOWN)) {this->state = PLAY;}
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_RIGHT)) {this->state = PLAY;}
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_LEFT)) {this->state = PLAY;}
+    }
+    
+    // If the game is not currently active, dont move the snake.
+    if (this->state != PLAY) {return;}
 
     // Check for key presses.
     glm::ivec2 next;
@@ -311,8 +321,8 @@ void Snake::update(float dt) {
     // Check if there is a crash
     std::array<glm::ivec2, 2> bounds = this->getBounds();
     next = this->bodies[this->bodies.size()-1] + this->direction;
-    for (int i = 1; i < this->bodies.size(); i++) {if (this->bodies[i] == next) {this->alive = false;}}
-    if (next.x <= bounds[0].x || next.x >= bounds[1].x || next.y <= bounds[0].y || next.y >= bounds[1].y) {this->alive = false;}
+    for (int i = 1; i < this->bodies.size(); i++) {if (this->bodies[i] == next) {this->state = END;}}
+    if (next.x <= bounds[0].x || next.x >= bounds[1].x || next.y <= bounds[0].y || next.y >= bounds[1].y) {this->state = END;}
 
     // Move the snake if it has reached the next unit.
     if (this->progress < 1.0f) {return;}
@@ -336,4 +346,8 @@ void Snake::update(float dt) {
     // Rerender the body
     this->body(changed);
 
+}
+
+int Snake::getState() {
+    return this->state;
 }
