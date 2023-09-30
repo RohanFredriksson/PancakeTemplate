@@ -16,6 +16,7 @@ namespace {
 Snake::Snake() : Component("Snake") {
 
     this->state = START;
+    this->score = 0;
     this->progress = 1.0f;
     this->speed = 5.0f;
     this->direction = RIGHT;
@@ -288,10 +289,19 @@ void Snake::update(float dt) {
 
     // Check if the user wishes to start the game.
     if (this->state == START) {
-        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_UP)) {this->state = PLAY;}
-        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_DOWN)) {this->state = PLAY;}
-        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_RIGHT)) {this->state = PLAY;}
-        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_LEFT)) {this->state = PLAY;}
+
+        bool started = false;
+        
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_UP)) {started = true;}
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_DOWN)) {started = true;}
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_RIGHT)) {started = true;}
+        if (Pancake::KeyListener::isKeyDown(GLFW_KEY_LEFT)) {started = true;}
+
+        if (started) {
+            this->state = PLAY;
+            this->score = 0;
+        }
+
     }
     
     // If the game is not currently active, dont move the snake.
@@ -329,7 +339,7 @@ void Snake::update(float dt) {
     this->bodies.push_back(this->bodies[this->bodies.size()-1] + this->direction);
     
     // Food detection.
-    if (this->bodies[this->bodies.size()-1] == this->food) {this->consume(); this->consumed = true;} // If the snake touches the food, move the food.
+    if (this->bodies[this->bodies.size()-1] == this->food) {this->consume(); this->score++; this->consumed = true;} // If the snake touches the food, move the food.
     else {this->bodies.erase(this->bodies.begin()); this->consumed = false;} // If it doesnt pop one of the tail.
 
     // Take the next input from the queue if there is one.
@@ -350,4 +360,8 @@ void Snake::update(float dt) {
 
 int Snake::getState() {
     return this->state;
+}
+
+int Snake::getScore() {
+    return this->score;
 }

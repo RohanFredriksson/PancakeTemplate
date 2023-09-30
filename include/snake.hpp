@@ -18,6 +18,7 @@ class Snake : public Pancake::Component {
         glm::ivec2 food;
         
         int state;
+        int score;
         bool consumed;
         float progress;
         float speed;
@@ -43,6 +44,7 @@ class Snake : public Pancake::Component {
         void update(float dt) override;
 
         int getState();
+        int getScore();
 
 };
 
