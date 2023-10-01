@@ -14,6 +14,7 @@ void SnakeInit(Pancake::Scene* scene) {
     entity->addComponent(snake);
 
     SnakeMap* map = new SnakeMap();
+    //map->setBounds(glm::ivec2(-10, -2), glm::ivec2(10, 5));
     entity->addComponent(map);
 
     scene->addEntity(entity);

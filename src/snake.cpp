@@ -208,15 +208,16 @@ void Snake::consume() {
 
     unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::mt19937 mt(seed);
-    std::uniform_int_distribution<int> dist(bounds[0].x + 1, bounds[1].x - 1);
+    std::uniform_int_distribution<int> x_dist(bounds[0].x + 1, bounds[1].x - 1);
+    std::uniform_int_distribution<int> y_dist(bounds[0].y + 1, bounds[1].y - 1);
 
     int x;
     int y;
 
     while (true) {
 
-        x = dist(mt);
-        y = dist(mt);
+        x = x_dist(mt);
+        y = y_dist(mt);
 
         bool flag = false;
         for (int i = 0; i < this->bodies.size(); i++) {
