@@ -275,6 +275,14 @@ void Snake::start() {
     this->getEntity()->addComponent(sprite);
     this->sprites.push_back(sprite);
 
+    // Score Text
+    std::array<glm::ivec2, 2> bounds = this->getBounds();
+    this->text = new Pancake::TextRenderer();
+    this->text->setText(std::to_string(this->score));
+    this->text->setZIndex(10);
+    this->text->setPositionOffset(bounds[0].x + 1, bounds[1].y);
+    this->getEntity()->addComponent(this->text);
+
     // Initialise the sprite renderers for the snake.
     this->head();
     this->tail();
@@ -339,7 +347,7 @@ void Snake::update(float dt) {
     this->bodies.push_back(this->bodies[this->bodies.size()-1] + this->direction);
     
     // Food detection.
-    if (this->bodies[this->bodies.size()-1] == this->food) {this->consume(); this->score++; this->consumed = true;} // If the snake touches the food, move the food.
+    if (this->bodies[this->bodies.size()-1] == this->food) {this->consume(); this->score++; this->text->setText(std::to_string(this->score)); this->consumed = true;} // If the snake touches the food, move the food.
     else {this->bodies.erase(this->bodies.begin()); this->consumed = false;} // If it doesnt pop one of the tail.
 
     // Take the next input from the queue if there is one.

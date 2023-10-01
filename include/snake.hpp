@@ -14,6 +14,7 @@ class Snake : public Pancake::Component {
         std::vector<glm::ivec2> inputs;
         std::vector<Pancake::SpriteRenderer*> sprites; // Never deleted at runtime.
         std::vector<Pancake::SpriteRenderer*> dynamics; // Dynamic sprites.
+        Pancake::TextRenderer* text; // Score;
 
         glm::ivec2 food;
         
