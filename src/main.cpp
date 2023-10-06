@@ -1,5 +1,4 @@
 #include "pancake/pancake.hpp"
-#include "snake_map.hpp"
 #include "snake.hpp"
 
 void SnakeInit(Pancake::Scene* scene) {
