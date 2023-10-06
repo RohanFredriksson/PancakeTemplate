@@ -7,6 +7,7 @@ void SnakeInit(Pancake::Scene* scene) {
     scene->setName("Snake Game");
     Pancake::Spritesheet::load("assets/textures/snake.png");
     Pancake::Spritesheet::load("assets/textures/snake_floor.png");
+    Pancake::Spritesheet::load("assets/textures/snake_border.png");
 
     Pancake::Entity* entity = new Pancake::Entity();
 
@@ -25,7 +26,7 @@ int main(int argc, char* argv[]) {
     Pancake::title("Template");
     Pancake::icon("assets/icons/house.png");
     Pancake::load(SnakeInit);
-    Pancake::projection(11);
+    Pancake::projection(12);
     Pancake::height(800);
     Pancake::width(1200);
     Pancake::start();

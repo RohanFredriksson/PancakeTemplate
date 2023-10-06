@@ -34,12 +34,77 @@ void SnakeMap::update(float dt) {
             sprite->setSprite(name);
 
             this->getEntity()->addComponent(sprite);
+            this->sprites.push_back(sprite);
 
         }
     }
 
-    this->dirty = false;
+    Pancake::SpriteRenderer* sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setRotationOffset(0.5f * M_PI);
+    sprite->setPositionOffset(bounds[0].x, bounds[0].y);
+    sprite->setSprite("snake_border_thin_corner");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
 
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setRotationOffset(M_PI);
+    sprite->setPositionOffset(bounds[1].x, bounds[0].y);
+    sprite->setSprite("snake_border_thin_corner");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
+
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setRotationOffset(-0.5f * M_PI);
+    sprite->setPositionOffset(bounds[1].x, bounds[1].y);
+    sprite->setSprite("snake_border_thin_corner");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
+
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setRotationOffset(0.0f);
+    sprite->setPositionOffset(bounds[0].x, bounds[1].y);
+    sprite->setSprite("snake_border_thin_corner");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
+
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setPositionOffset(0.5f * (bounds[0].x + bounds[1].x), bounds[0].y);
+    sprite->setSizeScale(bounds[1].x - bounds[0].x - 1, 1.0f);
+    sprite->setSprite("snake_border_thin_horizontal");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
+
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setPositionOffset(0.5f * (bounds[0].x + bounds[1].x), bounds[1].y);
+    sprite->setSizeScale(bounds[1].x - bounds[0].x - 1, 1.0f);
+    sprite->setSprite("snake_border_thin_horizontal");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
+
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setPositionOffset(bounds[0].x, 0.5f * (bounds[0].y + bounds[1].y));
+    sprite->setSizeScale(1.0f, bounds[1].y - bounds[0].y - 1);
+    sprite->setSprite("snake_border_thin_vertical");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
+
+    sprite = new Pancake::SpriteRenderer();
+    sprite->setZIndex(-1);
+    sprite->setPositionOffset(bounds[1].x, 0.5f * (bounds[0].y + bounds[1].y));
+    sprite->setSizeScale(1.0f, bounds[1].y - bounds[0].y - 1);
+    sprite->setSprite("snake_border_thin_vertical");
+    this->getEntity()->addComponent(sprite);
+    this->sprites.push_back(sprite);
+
+    this->dirty = false;
+    
 }
 
 void SnakeMap::setBounds(glm::ivec2 min, glm::ivec2 max) {

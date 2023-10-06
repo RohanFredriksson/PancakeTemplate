@@ -1,0 +1,12 @@
+{
+    "spriteWidth": 16,
+    "spriteHeight": 16,
+    "sprites": [
+        "snake_border_thin_vertical",
+        "snake_border_thin_horizontal",
+        "snake_border_thin_corner",
+        "snake_border_thick_vertical",
+        "snake_border_thick_horizontal",
+        "snake_border_thick_corner"
+    ]
+}
