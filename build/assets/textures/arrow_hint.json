@@ -1,0 +1,8 @@
+{
+    "spriteWidth": 16,
+    "spriteHeight": 16,
+    "sprites": [
+        "arrow_hint_key",
+        "arrow_hint_arrow"
+    ]
+}
