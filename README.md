@@ -5,3 +5,4 @@ This is a template repository for a lightweight 2D game engine written in C++. T
 
 ## Getting Started
 
+## Example
