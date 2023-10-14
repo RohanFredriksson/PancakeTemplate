@@ -57,7 +57,7 @@ void PhysicsInit(Pancake::Scene* scene) {
     entity = new Pancake::Entity(vec2(0.0f, -4.0f), vec2(1.0f, 1.0f), 0.0f);
     rigidbody = new Pancake::Rigidbody();
     box = new Pancake::Box();
-    box->setSize(vec2(21.0f, 1.0f));
+    box->setSize(vec2(51.0f, 1.0f));
     rigidbody->addCollider(box);
     entity->addComponent(rigidbody);
     scene->addEntity(entity);
@@ -155,7 +155,7 @@ void PhysicsInit(Pancake::Scene* scene) {
     float height = 0.75f;
     vec2 cursor = vec2(2, -3.0f);
 
-    for (int i = 3; i > 0; i--) {
+    for (int i = 15; i > 0; i--) {
         
         float start = cursor.x;
         for (int j = 0; j < i; j++) {
