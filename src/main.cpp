@@ -26,6 +26,10 @@ void SnakeInit(Pancake::Scene* scene) {
 
 void PhysicsInit(Pancake::Scene* scene) {
 
+    Pancake::Gravity* gravity = new Pancake::Gravity();
+    gravity->setGravity(glm::vec2(0.0f, -10.0f));
+    scene->getPhysics()->addForceGenerator(gravity);
+
     scene->setName("Physics");
     Pancake::Spritesheet::load("assets/textures/king.png");
     Pancake::Spritesheet::load("assets/textures/faces.png");
@@ -124,6 +128,7 @@ void PhysicsInit(Pancake::Scene* scene) {
     rigidbody->setFriction(0.0f);
     rigidbody->setRestitution(0.01f);
     rigidbody->setFixedOrientation(true);
+    rigidbody->addForceGenerator("Gravity");
     
     box = new Pancake::Box();
     box->setSize(0.75f, 0.75f);
@@ -155,7 +160,7 @@ void PhysicsInit(Pancake::Scene* scene) {
     float height = 0.75f;
     vec2 cursor = vec2(2, -3.0f);
 
-    for (int i = 15; i > 0; i--) {
+    for (int i = 3; i > 0; i--) {
         
         float start = cursor.x;
         for (int j = 0; j < i; j++) {
