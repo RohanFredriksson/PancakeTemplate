@@ -49,7 +49,7 @@ void PhysicsInit(Pancake::Scene* scene) {
     Pancake::Box* box;
 
     // Ground Sprites
-    for (int i = -100; i <= 100; i++) {
+    for (int i = -4; i <= 4; i++) {
         entity = new Pancake::Entity(i, -4.0f);
         spriterenderer = new Pancake::SpriteRenderer();
         spriterenderer->setSprite("dirt1");
@@ -158,7 +158,7 @@ void PhysicsInit(Pancake::Scene* scene) {
     float gap = 0.1f;
     float width = 0.75f;
     float height = 0.75f;
-    vec2 cursor = vec2(2, -3.0f);
+    vec2 cursor = vec2(2.0f, 0.0f);
 
     for (int i = 3; i > 0; i--) {
         
@@ -174,6 +174,7 @@ void PhysicsInit(Pancake::Scene* scene) {
             rigidbody->addCollider(box);
             rigidbody->setFriction(0.75f);
             rigidbody->setRestitution(0.3f);
+            rigidbody->addForceGenerator("Gravity");
             entity->addComponent(rigidbody);
 
             spriterenderer = new Pancake::SpriteRenderer();
