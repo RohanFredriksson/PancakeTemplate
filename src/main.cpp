@@ -205,8 +205,8 @@ void PhysicsInit(Pancake::Scene* scene) {
 int main(int argc, char* argv[]) {
     Pancake::title("Template");
     Pancake::icon("assets/icons/house.png");
-    //Pancake::load(SnakeInit);
-    Pancake::load(PhysicsInit);
+    Pancake::load(SnakeInit);
+    //Pancake::load(PhysicsInit);
     Pancake::projection(12);
     Pancake::height(800);
     Pancake::width(1200);

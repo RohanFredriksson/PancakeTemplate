@@ -278,10 +278,10 @@ void Snake::start() {
     // Score Text
     std::array<glm::ivec2, 2> bounds = this->getBounds();
     this->text = new Pancake::TextRenderer();
-    this->text->setText(std::to_string(this->score));
+    this->text->setText("Score: " + std::to_string(this->score));
     this->text->setZIndex(10);
-    this->text->setPositionOffset(bounds[0].x + 1, bounds[1].y);
-    //this->text->setAlignment(Pancake::TextRenderer::LEFT);
+    this->text->setPositionOffset(bounds[0].x + 1.0f, bounds[1].y - 0.0625f);
+    //this->text->setAlignment(Pancake::TextRenderer::RIGHT);
     this->getEntity()->addComponent(this->text);
 
     // Initialise the sprite renderers for the snake.
@@ -353,7 +353,7 @@ void Snake::update(float dt) {
     if (this->bodies[this->bodies.size()-1] == this->food) {
         this->consume(); 
         this->score++; 
-        this->text->setText(std::to_string(this->score)); 
+        this->text->setText("Score: " + std::to_string(this->score)); 
         this->consumed = true;
     }
     
